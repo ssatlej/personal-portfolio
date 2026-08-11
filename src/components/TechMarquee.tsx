@@ -1,5 +1,5 @@
 import { motion } from "motion/react";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { Tech } from "@/types";
 import { TechCard } from "./TechCard";
 
@@ -18,7 +18,20 @@ export function TechMarquee({
   tilt = 0,
   delay = 0,
 }: RowProps) {
+  const trackRef = useRef<HTMLDivElement>(null);
+  const [inView, setInView] = useState(false);
   const loop = [...items, ...items];
+
+  useEffect(() => {
+    const el = trackRef.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => setInView(entry?.isIntersecting ?? false),
+      { rootMargin: "200px 0px" },
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
 
   return (
     <motion.div
@@ -39,10 +52,12 @@ export function TechMarquee({
         }}
       >
         <div
-          className="flex w-max [animation-play-state:running] group-hover/row:[animation-play-state:paused] motion-reduce:animate-none"
+          ref={trackRef}
+          className="flex w-max motion-reduce:animate-none"
           style={{
             animation: `tech-marquee-${direction} ${duration}s linear infinite`,
-            willChange: "transform",
+            animationPlayState: inView ? "running" : "paused",
+            willChange: inView ? "transform" : "auto",
           }}
         >
           {loop.map((tech, i) => (
