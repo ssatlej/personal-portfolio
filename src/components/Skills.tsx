@@ -1,80 +1,43 @@
 import { motion } from "motion/react";
-import { Sparkles } from "lucide-react";
+import { ArrowUpRight, ChevronDownIcon, LayoutGrid, Sparkles } from "lucide-react";
 import { TechMarquee } from "@/components/TechMarquee";
 import type { Tech } from "@/types";
-import reactLogo from "@/assets/images/react.svg";
+import { ALL_TECH } from "./TechList";
+import { useState } from "react";
+import { TechAllModal } from "./TechAllModal";
 
 const ease = [0.16, 1, 0.3, 1] as const;
 
-import nextjsLogo from "@/assets/images/nextdotjs.svg";
-import typescriptLogo from "@/assets/images/typescript.svg";
-import javascriptLogo from "@/assets/images/javascript.svg";
-import html5Logo from "@/assets/images/html5.svg";
-import cssLogo from "@/assets/images/css.svg";
-import tailwindLogo from "@/assets/images/tailwindcss.svg";
-import bootstrapLogo from "@/assets/images/bootstrap.svg";
-import muiLogo from "@/assets/images/mui.svg";
-import sassLogo from "@/assets/images/sass.svg";
-import viteLogo from "@/assets/images/vite.svg";
+export function chunkIntoRows(items: Tech[], rowCount: number): Tech[][] {
+  const rows: Tech[][] = Array.from({ length: rowCount }, () => []);
+  const base = Math.floor(items.length / rowCount);
+  const remainder = items.length % rowCount;
 
-import nodejsLogo from "@/assets/images/nodedotjs.svg";
-import expressLogo from "@/assets/images/express.svg";
-import nestjsLogo from "@/assets/images/nestjs.svg";
-import socketioLogo from "@/assets/images/socketdotio.svg";
-import postgresqlLogo from "@/assets/images/postgresql.svg";
-import mongodbLogo from "@/assets/images/mongodb.svg";
-import mysqlLogo from "@/assets/images/mysql.svg";
-import redisLogo from "@/assets/images/redis.svg";
-import dockerLogo from "@/assets/images/docker.svg";
+  let cursor = 0;
+  for (let i = 0; i < rowCount; i++) {
+    const size = base + (i < remainder ? 1 : 0);
+    rows[i] = items.slice(cursor, cursor + size);
+    cursor += size;
+  }
+  return rows;
+}
 
-// import awsLogo from "@/assets/images/aws.svg";
-import nginxLogo from "@/assets/images/nginx.svg";
-import linuxLogo from "@/assets/images/linux.svg";
-import gitLogo from "@/assets/images/git.svg";
-import githubLogo from "@/assets/images/github.svg";
-import cursorLogo from "@/assets/images/cursor.svg";
-import claudeLogo from "@/assets/images/claude.svg";
-import stripeLogo from "@/assets/images/stripe.svg";
+const BASE_DURATION_PER_ITEM = 3;
+function buildRows(rowCount: number) {
+  return chunkIntoRows(ALL_TECH, rowCount).map((items, i) => ({
+    items,
+    direction: (i % 2 === 0 ? "left" : "right") as "left" | "right",
+    duration: items.length * BASE_DURATION_PER_ITEM,
+    tilt: i % 2 === 0 ? -2 : 2,
+    delay: i * 0.05,
+  }));
+}
 
-export const ROW_1: Tech[] = [
-  { name: "React.js", logo: reactLogo },
-  { name: "Next.js", logo: nextjsLogo },
-  { name: "TypeScript", logo: typescriptLogo },
-  { name: "JavaScript", logo: javascriptLogo },
-  { name: "HTML5", logo: html5Logo },
-  { name: "CSS3", logo: cssLogo },
-  { name: "Tailwind CSS", logo: tailwindLogo },
-  { name: "Bootstrap", logo: bootstrapLogo },
-  { name: "Material UI", logo: muiLogo },
-  { name: "SCSS", logo: sassLogo },
-  { name: "Vite", logo: viteLogo },
-];
-
-export const ROW_2: Tech[] = [
-  { name: "Node.js", logo: nodejsLogo },
-  { name: "Express.js", logo: expressLogo },
-  { name: "Nest.js", logo: nestjsLogo },
-  { name: "Socket.IO", logo: socketioLogo },
-  { name: "PostgreSQL", logo: postgresqlLogo },
-  { name: "MongoDB", logo: mongodbLogo },
-  { name: "MySQL", logo: mysqlLogo },
-  { name: "Redis", logo: redisLogo },
-  { name: "Docker", logo: dockerLogo },
-];
-
-export const ROW_3: Tech[] = [
-  { name: "AWS" },
-  { name: "Nginx", logo: nginxLogo },
-  { name: "Linux", logo: linuxLogo },
-  { name: "Git", logo: gitLogo },
-  { name: "GitHub", logo: githubLogo },
-  { name: "Cursor AI", logo: cursorLogo },
-  { name: "Claude Code", logo: claudeLogo },
-  { name: "Stripe", logo: stripeLogo },
-  { name: "SendGrid" }, // no logo in original data — renders monogram fallback
-];
+const DESKTOP_ROWS = buildRows(3);
+const MOBILE_ROWS = buildRows(4);
 
 export function Skills() {
+  const [showAll, setShowAll] = useState(false);
   return (
     <section id="skills" aria-labelledby="skills-title" className="relative w-full py-28 md:py-36">
       <div className="container-page relative z-10">
@@ -110,12 +73,27 @@ export function Skills() {
           </p>
         </motion.div>
       </div>
-
-      <div className="relative z-10 mt-16 flex flex-col gap-3 md:mt-20 md:gap-5">
-        <TechMarquee items={ROW_1} direction="left" duration={42} tilt={-2} />
-        <TechMarquee items={ROW_2} direction="right" duration={38} tilt={2} delay={0.1} />
-        <TechMarquee items={ROW_3} direction="left" duration={46} tilt={-2} delay={0.2} />
+      <div className="flex items-center justify-center gap-3 my-6">
+        <button
+          type="button"
+          onClick={() => setShowAll(true)}
+          className="mt-8 inline-flex items-center cursor-pointer gap-2 rounded-full border border-primary/30 bg-primary/5 px-5 py-2.5 text-sm font-medium text-primary transition-colors hover:bg-primary/10"
+        >
+          <ArrowUpRight className="h-4 w-4" aria-hidden />
+          View All
+        </button>
       </div>
+      <div className="relative z-10 mt-12 flex flex-col gap-3 md:hidden">
+        {MOBILE_ROWS.map((row, i) => (
+          <TechMarquee key={i} {...row} />
+        ))}
+      </div>
+      <div className="relative z-10 mt-16 hidden flex-col gap-5 md:mt-20 md:flex">
+        {DESKTOP_ROWS.map((row, i) => (
+          <TechMarquee key={i} {...row} />
+        ))}
+      </div>
+      <TechAllModal open={showAll} onClose={() => setShowAll(false)} items={ALL_TECH} />
     </section>
   );
 }

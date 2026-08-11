@@ -9,10 +9,6 @@ type Particle = {
   a: number;
 };
 
-/**
- * Subtle animated neon-blue particle field with mouse parallax.
- * Purely decorative — hidden from assistive tech, disabled for reduced motion.
- */
 export function ParticleField() {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
