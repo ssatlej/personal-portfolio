@@ -14,6 +14,8 @@ export function TechCard({ tech, fluid = false }: { tech: Tech; fluid?: boolean 
         <img
           src={tech.logo}
           alt={`${tech.name} logo`}
+          height={36}
+          width={36}
           loading="lazy"
           decoding="async"
           fetchPriority="low"
