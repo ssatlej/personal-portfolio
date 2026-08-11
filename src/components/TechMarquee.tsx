@@ -13,7 +13,7 @@ function TechCard({ tech }: { tech: Tech }) {
   return (
     <div
       className="surface-panel group/card mr-4 flex h-[86px] w-[150px] shrink-0 flex-col items-center justify-center gap-2.5 px-4 shadow-[0_18px_40px_-28px_oklch(0_0_0/0.9)] transition-all duration-300 will-change-transform hover:-translate-y-1.5 hover:scale-[1.05] hover:border-primary/45 hover:shadow-glow sm:mr-6 sm:h-[104px] sm:w-[182px] sm:gap-3"
-      style={{ transform: "translateZ(0)" }}
+      // style={{ transform: "translateZ(0)" }}
     >
       {tech.logo && !failed ? (
         <img
@@ -66,13 +66,11 @@ export function TechMarquee({
       viewport={{ once: true, amount: 0.4 }}
       transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1], delay }}
       className="group/row relative"
-      style={{ perspective: "1200px" }}
     >
       <div
         className="overflow-visible py-5 md:py-6"
         style={{
-          transform: `rotateX(6deg) rotateY(${tilt}deg) translateZ(-20px)`,
-          transformStyle: "preserve-3d",
+          transform: tilt ? `rotate(${tilt * 0.4}deg)` : undefined,
           maskImage:
             "linear-gradient(to right, transparent 0%, black 12%, black 88%, transparent 100%)",
           WebkitMaskImage:
@@ -83,6 +81,7 @@ export function TechMarquee({
           className="flex w-max [animation-play-state:running] group-hover/row:[animation-play-state:paused] motion-reduce:animate-none"
           style={{
             animation: `tech-marquee-${direction} ${duration}s linear infinite`,
+            willChange: "transform",
           }}
         >
           {loop.map((tech, i) => (

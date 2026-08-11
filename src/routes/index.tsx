@@ -24,7 +24,31 @@ export const Route = createFileRoute("/")({
           "Portfolio of Satlej Sunil, senior software engineer building fast, elegant and reliable products for the web.",
       },
       { property: "og:type", content: "website" },
+      { property: "og:url", content: "https://satlej.com/" },
+      { property: "og:image", content: "https://satlej.com/og-image.png" },
+
       { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: "Satlej Sunil — Senior Software Engineer" },
+      {
+        name: "twitter:description",
+        content:
+          "Portfolio of Satlej Sunil, senior software engineer building fast, elegant and reliable products for the web.",
+      },
+      { name: "twitter:image", content: "https://satlej.com/og-image.png" },
+    ],
+    links: [{ rel: "canonical", href: "https://satlej.com/" }],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "Person",
+          name: "Satlej Sunil",
+          url: "https://satlej.com",
+          jobTitle: "Senior Software Engineer",
+          sameAs: ["https://github.com/ssatlej"],
+        }),
+      },
     ],
   }),
   component: Index,
