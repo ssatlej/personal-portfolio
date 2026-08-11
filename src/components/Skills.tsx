@@ -5,6 +5,7 @@ import type { Tech } from "@/types";
 import { ALL_TECH } from "./TechList";
 import { useState } from "react";
 import { TechAllModal } from "./TechAllModal";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 const ease = [0.16, 1, 0.3, 1] as const;
 
@@ -37,6 +38,7 @@ const DESKTOP_ROWS = buildRows(3);
 const MOBILE_ROWS = buildRows(4);
 
 export function Skills() {
+  const isMobile = useIsMobile();
   const [showAll, setShowAll] = useState(false);
   return (
     <section id="skills" aria-labelledby="skills-title" className="relative w-full py-28 md:py-36">
@@ -82,14 +84,10 @@ export function Skills() {
         </motion.div>
       </div>
       <div className="relative z-10 mt-12 flex flex-col gap-3 md:hidden">
-        {MOBILE_ROWS.map((row, i) => (
-          <TechMarquee key={i} {...row} />
-        ))}
+        {isMobile ? MOBILE_ROWS.map((row, i) => <TechMarquee key={i} {...row} />) : null}
       </div>
       <div className="relative z-10 mt-16 hidden flex-col gap-5 md:mt-20 md:flex">
-        {DESKTOP_ROWS.map((row, i) => (
-          <TechMarquee key={i} {...row} />
-        ))}
+        {!isMobile ? DESKTOP_ROWS.map((row, i) => <TechMarquee key={i} {...row} />) : null}
       </div>
       <TechAllModal open={showAll} onClose={() => setShowAll(false)} items={ALL_TECH} />
     </section>
