@@ -1,11 +1,6 @@
 import { motion } from "motion/react";
 import { useState } from "react";
-
-export type Tech = {
-  name: string;
-  /** Absolute logo URL (simple-icons / devicon). Omit to render a monogram. */
-  logo?: string;
-};
+import type { Tech } from "@/types";
 
 function TechCard({ tech }: { tech: Tech }) {
   const [failed, setFailed] = useState(false);
@@ -21,6 +16,7 @@ function TechCard({ tech }: { tech: Tech }) {
           alt={`${tech.name} logo`}
           loading="lazy"
           decoding="async"
+          fetchPriority="low"
           onError={() => setFailed(true)}
           className="h-7 w-7 object-contain sm:h-9 sm:w-9"
         />
@@ -70,7 +66,7 @@ export function TechMarquee({
       <div
         className="overflow-visible py-5 md:py-6"
         style={{
-          transform: tilt ? `rotate(${tilt * 0.4}deg)` : undefined,
+          // transform: tilt ? `rotate(${tilt * 0.4}deg)` : undefined,
           maskImage:
             "linear-gradient(to right, transparent 0%, black 12%, black 88%, transparent 100%)",
           WebkitMaskImage:
