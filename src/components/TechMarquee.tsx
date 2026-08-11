@@ -27,7 +27,7 @@ export function TechMarquee({
     if (!el) return;
     const observer = new IntersectionObserver(
       ([entry]) => setInView(entry?.isIntersecting ?? false),
-      { rootMargin: "200px 0px" },
+      { rootMargin: "100px 0px" },
     );
     observer.observe(el);
     return () => observer.disconnect();
@@ -39,10 +39,10 @@ export function TechMarquee({
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, amount: 0.4 }}
       transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1], delay }}
-      className="group/row relative"
+      className="group/row relative overflow-hidden"
     >
       <div
-        className="overflow-visible py-5 md:py-6"
+        className=" py-5 md:py-6"
         style={{
           // transform: tilt ? `rotate(${tilt * 0.4}deg)` : undefined,
           maskImage:
@@ -58,6 +58,7 @@ export function TechMarquee({
             animation: `tech-marquee-${direction} ${duration}s linear infinite`,
             animationPlayState: inView ? "running" : "paused",
             willChange: inView ? "transform" : "auto",
+            transform: "translate3d(0,0,0)",
           }}
         >
           {loop.map((tech, i) => (
